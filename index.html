@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Passeio Virtual WebGL - FPS</title>
+
+<style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    body{
+        background-color: #222;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        width:100vw;
+        height:100vh;
+        overflow:hidden;
+    }
+    canvas{
+        width:100%;
+        max-height:100vh;
+        max-width:calc(100vh * 4/3);
+        aspect-ratio:4/3;
+        border:2px solid #444;
+        background:black;
+    }
+    #hud{
+        position:absolute;
+        top:10px;
+        left:10px;
+        font-family:Arial;
+        color:white;
+        background:rgba(0,0,0,0.5);
+        padding:10px;
+        border-radius:8px;
+        font-size:14px;
+    }
+</style>
+
+<script src="./math.js"></script>
+<script src="./main.js"></script>
+
+<!-- Vertex Shader -->
+<script id="vertex-shader" type="notjs">
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 texCoord;
+
+uniform mat4 u_model;
+uniform mat4 u_view;
+uniform mat4 u_proj;
+
+varying vec3 v_fragPos;
+varying vec3 v_normal;
+varying vec2 v_texCoord;
+
+void main()
+{
+    vec4 worldPos = u_model * vec4(position, 1.0);
+    v_fragPos = worldPos.xyz;
+
+    // normal no espaço do mundo
+    v_normal = mat3(u_model) * normal;
+
+    v_texCoord = texCoord;
+
+    gl_Position = u_proj * u_view * worldPos;
+}
+</script>
+
+<!-- Fragment Shader -->
+<script id="frag-shader" type="notjs">
+precision mediump float;
+
+uniform vec3 u_lightPos;
+uniform vec3 u_lightColor;
+uniform vec3 u_camPos;
+
+uniform bool u_useTexture;
+uniform sampler2D u_tex;
+uniform vec3 u_solidColor;
+
+varying vec3 v_fragPos;
+varying vec3 v_normal;
+varying vec2 v_texCoord;
+
+void main()
+{
+    vec3 N = normalize(v_normal);
+    vec3 L = normalize(u_lightPos - v_fragPos);
+    vec3 V = normalize(u_camPos - v_fragPos);
+
+    // componente ambiente
+    float ambientStrength = 0.15;
+    vec3 ambient = ambientStrength * u_lightColor;
+
+    // difusa (Lambert)
+    float diff = max(dot(N, L), 0.0);
+    vec3 diffuse = diff * u_lightColor;
+
+    // especular (Phong)
+    vec3 R = reflect(-L, N);
+    float spec = pow(max(dot(V, R), 0.0), 64.0);
+    float specStrength = 0.8;
+    vec3 specular = specStrength * spec * u_lightColor;
+
+    vec3 baseColor;
+    if(u_useTexture)
+        baseColor = texture2D(u_tex, v_texCoord).rgb;
+    else
+        baseColor = u_solidColor;
+
+    vec3 result = (ambient + diffuse + specular) * baseColor;
+
+    gl_FragColor = vec4(result, 1.0);
+}
+</script>
+
+</head>
+
+<body onload="init()">
+
+<div id="hud">
+    <b>Passeio Virtual FPS</b><br>
+    WASD = mover<br>
+    Mouse = olhar<br>
+    Space = pular<br>
+    Shift = correr<br>
+</div>
+
+<canvas id="glcanvas1" width="800" height="600"></canvas>
+
+</body>
+</html>
