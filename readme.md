@@ -166,3 +166,5 @@ Trabalho desenvolvido para a disciplina **Computação Gráfica**
 Universidade Estadual do Ceará (UECE)  
 
 **Autor:** Francisco Crispim Pinto Uchôa Neto
+
+> link do canvas: https://www.canva.com/design/DAHArMvyWZY/0arD2CQEhs_KXVmCk-e7bA/edit?utm_content=DAHArMvyWZY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
