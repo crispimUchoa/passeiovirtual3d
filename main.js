@@ -17,7 +17,6 @@ var mouseSensitivity = 0.002;
 var playerY = 1.5;
 var velocityY = 0;
 
-// pulo mais alto e gravidade menor
 var gravity = -0.004;
 var jumpStrength = 0.28;
 
