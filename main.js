@@ -489,12 +489,12 @@ function updateCamera(dt)
         camPos[2] -= forward[2] * move;
     }
     if(keys["a"]) {
-        camPos[0] -= right[0] * move;
-        camPos[2] -= right[2] * move;
-    }
-    if(keys["d"]) {
         camPos[0] += right[0] * move;
         camPos[2] += right[2] * move;
+    }
+    if(keys["d"]) {
+        camPos[0] -= right[0] * move;
+        camPos[2] -= right[2] * move;
     }
 
     // gravidade
